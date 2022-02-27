@@ -20,12 +20,12 @@ public class ItemController {
     }
 
     @GetMapping({"/{itemId}"})
-    public ResponseEntity<ItemDTO> getItems(@PathVariable UUID itemId){
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable UUID itemId){
     return new ResponseEntity<>(itemService.getItemById(itemId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity handlePost(@RequestBody ItemDTO itemDTO){
+    public ResponseEntity saveNewItem(@RequestBody ItemDTO itemDTO){
     ItemDTO savedItemDTO = itemService.saveNewItem(itemDTO);
     HttpHeaders httpHeaders = new HttpHeaders();
     //TODO: Add URL to Location
@@ -36,14 +36,14 @@ public class ItemController {
 
 
     @PutMapping({"/{itemId}"})
-    public ResponseEntity handleUpdate(ItemDTO itemDTO,@PathVariable UUID itemId){
-        ItemDTO savedItemDTO = itemService.updateItem(itemDTO,itemId);
+    public ResponseEntity updateItemById(ItemDTO itemDTO,@PathVariable UUID itemId){
+        ItemDTO savedItemDTO = itemService.updateItemById(itemDTO,itemId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping({"/{itemId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteItem(@PathVariable UUID itemId){
-        itemService.deleteItem(itemId);
+    public void deleteItemById(@PathVariable UUID itemId){
+        itemService.deleteItemById(itemId);
     }
 }

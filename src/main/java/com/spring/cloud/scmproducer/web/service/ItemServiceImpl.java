@@ -21,13 +21,13 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public ItemDTO updateItem(ItemDTO itemDTO, UUID itemId) {
+    public ItemDTO updateItemById(ItemDTO itemDTO, UUID itemId) {
         //TODO: Implement update Logic
         return null;
     }
 
     @Override
-    public ItemDTO deleteItem(UUID itemId) {
+    public ItemDTO deleteItemById(UUID itemId) {
         //TODO: Implement delete Logic
         log.info("Deleted Item: "+itemId);
         return null;
