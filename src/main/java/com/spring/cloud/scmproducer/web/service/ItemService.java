@@ -9,7 +9,7 @@ public interface ItemService {
 
     ItemDTO saveNewItem(ItemDTO itemDTO);
 
-    ItemDTO updateItem(ItemDTO itemDTO, UUID itemId);
+    ItemDTO updateItemById(ItemDTO itemDTO, UUID itemId);
 
-    ItemDTO deleteItem(UUID itemId);
+    ItemDTO deleteItemById(UUID itemId);
 }
