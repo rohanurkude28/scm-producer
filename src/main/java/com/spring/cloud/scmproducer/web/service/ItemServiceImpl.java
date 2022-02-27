@@ -1,6 +1,7 @@
 package com.spring.cloud.scmproducer.web.service;
 
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
+import com.spring.cloud.scmproducer.web.model.ItemTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 public class ItemServiceImpl implements ItemService{
     @Override
     public ItemDTO getItemById(UUID itemId){
-        return ItemDTO.builder().id(UUID.randomUUID()).name("Surf Excel Detergent").type("Laundry Detergent").build();
+        return ItemDTO.builder().id(UUID.randomUUID()).itemName("Surf Excel Detergent").itemType(ItemTypeEnum.LAUNDRY).build();
     }
 
     @Override
