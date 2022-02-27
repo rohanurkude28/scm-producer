@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data // Getters/Setters, RequiredArgs, toString, equals/hashcode
@@ -13,6 +15,14 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ItemDTO {
     private UUID id;
-    private String name;
-    private String type;
+
+    private OffsetDateTime createdDate;
+    private OffsetDateTime modifiedDate;
+
+    private String itemName;
+    private ItemTypeEnum itemType;
+
+    private Long batchNo;
+    private BigDecimal price;
+    private Integer quantityOnHand;
 }
