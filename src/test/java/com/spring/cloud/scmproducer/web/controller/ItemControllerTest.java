@@ -3,18 +3,20 @@ package com.spring.cloud.scmproducer.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
+import com.spring.cloud.scmproducer.web.model.ItemTypeEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.annotation.Validated;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @WebMvcTest(ItemController.class)
 @ComponentScan(basePackages = "com.spring.cloud.scmproducer.web")
@@ -27,7 +29,7 @@ class ItemControllerTest {
     ObjectMapper objectMapper;
 
     private static final String URL = "/api/v1/items/";
-    private static final ItemDTO mockItemDTO = ItemDTO.builder().build();
+    private static final ItemDTO mockItemDTO = ItemDTO.builder().id(null).itemName("MockItem").itemType(ItemTypeEnum.BAKERY).batchNo(1L).price(new BigDecimal(1)).build();;
 
     @Test
     void getItemById() throws Exception {
