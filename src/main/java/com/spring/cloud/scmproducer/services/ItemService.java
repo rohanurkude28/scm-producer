@@ -1,4 +1,4 @@
-package com.spring.cloud.scmproducer.web.service;
+package com.spring.cloud.scmproducer.services;
 
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
 
