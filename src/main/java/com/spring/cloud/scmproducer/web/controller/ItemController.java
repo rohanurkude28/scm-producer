@@ -1,30 +1,25 @@
 package com.spring.cloud.scmproducer.web.controller;
 
+import com.spring.cloud.scmproducer.services.ItemService;
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
-import com.spring.cloud.scmproducer.web.service.ItemService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Validated
 @RequestMapping("/api/v1/items")
 @RestController
+@RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
-
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
 
     @GetMapping({"/{itemId}"})
     public ResponseEntity<ItemDTO> getItemById(@NotNull @PathVariable UUID itemId){
