@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Random;
 
 @Slf4j
-@Component
+//@Component
 public class ItemLoader implements CommandLineRunner {
 
     private final ItemRepository itemRepository;
