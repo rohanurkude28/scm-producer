@@ -12,7 +12,7 @@
 	<artifactId>scm-producer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>scm-producer</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Supply Chain Management Producer Service</description>
 	<properties>
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
