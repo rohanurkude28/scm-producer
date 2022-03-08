@@ -2,7 +2,10 @@ package com.spring.cloud.scmproducer.web.controller;
 
 import com.spring.cloud.scmproducer.services.ItemService;
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
+import com.spring.cloud.scmproducer.web.model.ItemPagedList;
+import com.spring.cloud.scmproducer.web.model.ItemTypeEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import java.util.UUID;
 public class ItemController {
 
     private final ItemService itemService;
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 25;
 
     @GetMapping({"/{itemId}"})
     public ResponseEntity<ItemDTO> getItemById(@NotNull @PathVariable UUID itemId){
@@ -48,4 +53,24 @@ public class ItemController {
     public void deleteItemById(@PathVariable UUID itemId){
         itemService.deleteItemById(itemId);
     }
+
+    @GetMapping(produces = { "application/json" })
+    public ResponseEntity<ItemPagedList> listItems(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                                   @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                   @RequestParam(value = "itemName", required = false) String itemName,
+                                                   @RequestParam(value = "itemType", required = false) ItemTypeEnum itemType){
+
+        if (pageNumber == null || pageNumber < 0){
+            pageNumber = DEFAULT_PAGE_NUMBER;
+        }
+
+        if (pageSize == null || pageSize < 1) {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+
+        ItemPagedList ItemList = itemService.listsItems(itemName, itemType, PageRequest.of(pageNumber, pageSize));
+
+        return new ResponseEntity<>(ItemList, HttpStatus.OK);
+    }
+    
 }

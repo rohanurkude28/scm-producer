@@ -5,11 +5,17 @@ import com.spring.cloud.scmproducer.repositories.ItemRepository;
 import com.spring.cloud.scmproducer.web.controller.NotFoundException;
 import com.spring.cloud.scmproducer.web.mappers.ItemMapper;
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
+import com.spring.cloud.scmproducer.web.model.ItemPagedList;
+import com.spring.cloud.scmproducer.web.model.ItemTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -48,5 +54,37 @@ public class ItemServiceImpl implements ItemService {
         //TODO: Implement delete Logic
         log.info("Deleted Item: "+itemId);
         return null;
+    }
+
+    @Override
+    public ItemPagedList listsItems(String itemName, ItemTypeEnum itemType, PageRequest pageRequest) {
+
+        ItemPagedList itemPagedList;
+        Page<Item> itemPage;
+
+        if (!StringUtils.isEmpty(itemName) && !StringUtils.isEmpty(itemType)) {
+            //search both
+            itemPage = itemRepository.findAllByItemNameAndItemType(itemName, itemType, pageRequest);
+        } else if (!StringUtils.isEmpty(itemName) && StringUtils.isEmpty(itemType)) {
+            //search item_service name
+            itemPage = itemRepository.findAllByItemName(itemName, pageRequest);
+        } else if (StringUtils.isEmpty(itemName) && !StringUtils.isEmpty(itemType)) {
+            //search item_service type
+            itemPage = itemRepository.findAllByItemType(itemType, pageRequest);
+        } else {
+            itemPage = itemRepository.findAll(pageRequest);
+        }
+
+        itemPagedList = new ItemPagedList(itemPage
+                .getContent()
+                .stream()
+                .map(itemMapper::itemToItemDTO)
+                .collect(Collectors.toList()),
+                PageRequest
+                        .of(itemPage.getPageable().getPageNumber(),
+                                itemPage.getPageable().getPageSize()),
+                itemPage.getTotalElements());
+
+        return itemPagedList;
     }
 }
