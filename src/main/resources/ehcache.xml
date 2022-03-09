@@ -7,6 +7,7 @@
 
     <cache alias="itemCache" uses-template="config-cache"/>
     <cache alias="itemListCache" uses-template="config-cache"/>
+    <cache alias="itemBatchListCache" uses-template="config-cache"/>
 
     <cache-template name="config-cache">
         <expiry>
