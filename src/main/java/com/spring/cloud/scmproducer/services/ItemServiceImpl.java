@@ -9,6 +9,7 @@ import com.spring.cloud.scmproducer.web.model.ItemPagedList;
 import com.spring.cloud.scmproducer.web.model.ItemTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
 
+    @Cacheable(cacheNames = "itemCache",key = "#itemId", condition = "#showInventoryOnHand == false")
     @Override
     public ItemDTO getItemById(UUID itemId, Boolean showInventoryOnHand) {
         Function<Item, ItemDTO> itemToItemDTOMapper = showInventoryOnHand ? itemMapper::itemToItemDTOwithInventory : itemMapper::itemToItemDTO;
@@ -56,9 +58,9 @@ public class ItemServiceImpl implements ItemService {
         return null;
     }
 
+    @Cacheable(cacheNames = "itemListCache", condition = "#showInventoryOnHand == false")
     @Override
     public ItemPagedList listsItems(String itemName, ItemTypeEnum itemType, PageRequest pageRequest, Boolean showInventoryOnHand) {
-
         Page<Item> itemPage;
 
         if (!StringUtils.isEmpty(itemName) && !StringUtils.isEmpty(itemType)) {
