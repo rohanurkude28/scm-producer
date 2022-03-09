@@ -35,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
         return itemToItemDTOMapper.apply(itemRepository.findById(itemId).orElseThrow(NotFoundException::new));
     }
 
+    @Cacheable(cacheNames = "itemBatchListCache",key = "#batchNo")
     @Override
     public List<ItemDTO> getItemByBatchNo(Long batchNo) {
         return itemMapper.itemToItemDTO(itemRepository.findByBatchNo(batchNo));
