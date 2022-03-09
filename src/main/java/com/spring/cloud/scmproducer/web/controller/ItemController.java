@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
 
 @Validated
-@RequestMapping("/api/v1/items")
+@RequestMapping("/api/v1/")
 @RestController
 @RequiredArgsConstructor
 public class ItemController {
@@ -26,13 +27,13 @@ public class ItemController {
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 25;
 
-    @GetMapping({"/{itemId}"})
+    @GetMapping({"items/{itemId}"})
     public ResponseEntity<ItemDTO> getItemById(@NotNull @PathVariable UUID itemId, @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand) {
         if (showInventoryOnHand == null) showInventoryOnHand = false;
         return new ResponseEntity<>(itemService.getItemById(itemId, showInventoryOnHand), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping({"items"})
     public ResponseEntity saveNewItem(@Valid @NotNull @RequestBody ItemDTO itemDTO) {
         ItemDTO savedItemDTO = itemService.saveNewItem(itemDTO);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -43,19 +44,19 @@ public class ItemController {
     }
 
 
-    @PutMapping({"/{itemId}"})
+    @PutMapping({"items/{itemId}"})
     public ResponseEntity updateItemById(ItemDTO itemDTO, @PathVariable UUID itemId) {
         ItemDTO savedItemDTO = itemService.updateItemById(itemDTO, itemId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping({"/{itemId}"})
+    @DeleteMapping({"items/{itemId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteItemById(@PathVariable UUID itemId) {
         itemService.deleteItemById(itemId);
     }
 
-    @GetMapping(produces = {"application/json"})
+    @GetMapping(produces = {"application/json"},path = "items")
     public ResponseEntity<ItemPagedList> listItems(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                    @RequestParam(value = "itemName", required = false) String itemName,
@@ -66,9 +67,15 @@ public class ItemController {
         if (pageSize == null || pageSize < 1) pageSize = DEFAULT_PAGE_SIZE;
         if(showInventoryOnHand == null) showInventoryOnHand=false;
 
-        ItemPagedList ItemList = itemService.listsItems(itemName, itemType, PageRequest.of(pageNumber, pageSize), showInventoryOnHand);
+        ItemPagedList itemList = itemService.listsItems(itemName, itemType, PageRequest.of(pageNumber, pageSize), showInventoryOnHand);
 
-        return new ResponseEntity<>(ItemList, HttpStatus.OK);
+        return new ResponseEntity<>(itemList, HttpStatus.OK);
+    }
+
+    @GetMapping(produces = {"application/json"}, path = {"itemBatch/{batchNo}"})
+    public ResponseEntity<List<ItemDTO>> getItemsbyBatchNo(@NotNull @PathVariable Long batchNo) {
+        List<ItemDTO> itemList = itemService.getItemByBatchNo(batchNo);
+        return new ResponseEntity<>(itemList, HttpStatus.OK);
     }
 
 }

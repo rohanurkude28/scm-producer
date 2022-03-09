@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,6 +33,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDTO getItemById(UUID itemId, Boolean showInventoryOnHand) {
         Function<Item, ItemDTO> itemToItemDTOMapper = showInventoryOnHand ? itemMapper::itemToItemDTOwithInventory : itemMapper::itemToItemDTO;
         return itemToItemDTOMapper.apply(itemRepository.findById(itemId).orElseThrow(NotFoundException::new));
+    }
+
+    @Override
+    public List<ItemDTO> getItemByBatchNo(Long batchNo) {
+        return itemMapper.itemToItemDTO(itemRepository.findByBatchNo(batchNo));
     }
 
     @Override
