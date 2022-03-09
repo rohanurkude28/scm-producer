@@ -21,6 +21,11 @@ public abstract class ItemMapperDecorator implements ItemMapper{
 
     @Override
     public ItemDTO itemToItemDTO(Item item) {
+        return mapper.itemToItemDTO(item);
+    }
+
+    @Override
+    public ItemDTO itemToItemDTOwithInventory(Item item) {
         ItemDTO dto = mapper.itemToItemDTO(item);
         dto.setQuantityOnHand(itemInventoryService.getOnhandInventory(item.getId()));
         return dto;

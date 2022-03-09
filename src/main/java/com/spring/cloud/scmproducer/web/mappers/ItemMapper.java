@@ -10,5 +10,6 @@ import org.mapstruct.Mapper;
 public interface ItemMapper {
 
     ItemDTO itemToItemDTO(Item item);
+    ItemDTO itemToItemDTOwithInventory(Item item);
     Item itemDTOToItem(ItemDTO itemDTO);
 }

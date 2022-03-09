@@ -8,9 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import java.util.UUID;
 
 public interface ItemService {
-    ItemPagedList listsItems(String itemName, ItemTypeEnum itemType, PageRequest pageRequest);
+    ItemPagedList listsItems(String itemName, ItemTypeEnum itemType, PageRequest pageRequest, Boolean showInventoryOnHand);
 
-    ItemDTO getItemById(UUID itemId);
+    ItemDTO getItemById(UUID itemId, Boolean showInventoryOnHand);
 
     ItemDTO saveNewItem(ItemDTO itemDTO);
 
