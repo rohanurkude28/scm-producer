@@ -15,6 +15,5 @@ public interface ItemMapper {
     @Named(value = "useMe")
     ItemDTO itemToItemDTO(Item item);
     ItemDTO itemToItemDTOwithInventory(Item item);
-    List<ItemDTO> itemToItemDTO(List<Item> items);
     Item itemDTOToItem(ItemDTO itemDTO);
 }

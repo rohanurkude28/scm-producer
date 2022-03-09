@@ -73,9 +73,8 @@ public class ItemController {
     }
 
     @GetMapping(produces = {"application/json"}, path = {"itemBatch/{batchNo}"})
-    public ResponseEntity<List<ItemDTO>> getItemsbyBatchNo(@NotNull @PathVariable Long batchNo) {
-        List<ItemDTO> itemList = itemService.getItemByBatchNo(batchNo);
-        return new ResponseEntity<>(itemList, HttpStatus.OK);
+    public ResponseEntity<ItemDTO> getItembyBatchNo(@NotNull @PathVariable Long batchNo) {
+        return new ResponseEntity<>(itemService.getItemByBatchNo(batchNo), HttpStatus.OK);
     }
 
 }

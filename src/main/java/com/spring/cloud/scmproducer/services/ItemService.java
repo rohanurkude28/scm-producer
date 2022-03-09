@@ -13,7 +13,7 @@ public interface ItemService {
 
     ItemDTO getItemById(UUID itemId, Boolean showInventoryOnHand);
 
-    List<ItemDTO> getItemByBatchNo(Long batchNo);
+    ItemDTO getItemByBatchNo(Long batchNo);
 
     ItemDTO saveNewItem(ItemDTO itemDTO);
 
