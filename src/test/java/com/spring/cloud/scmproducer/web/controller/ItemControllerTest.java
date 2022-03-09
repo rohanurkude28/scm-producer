@@ -1,7 +1,6 @@
 package com.spring.cloud.scmproducer.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.cloud.scmproducer.domain.Item;
 import com.spring.cloud.scmproducer.services.ItemService;
 import com.spring.cloud.scmproducer.web.model.ItemDTO;
 import com.spring.cloud.scmproducer.web.model.ItemTypeEnum;
@@ -24,11 +23,11 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,7 +53,7 @@ class ItemControllerTest {
 
     @Test
     void getItemById() throws Exception {
-        given(itemService.getItemById(any())).willReturn(getValidItemDto());
+        given(itemService.getItemById(any(), anyBoolean())).willReturn(getValidItemDto());
 
         mockMvc.perform(get("/api/v1/items/" + UUID.randomUUID().toString()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

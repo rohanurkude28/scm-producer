@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,20 +27,19 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDTO getItemById(UUID itemId){
-        return itemMapper.itemToItemDTO(itemRepository.findById(itemId).orElseThrow(NotFoundException::new));
-        //return ItemDTO.builder().id(UUID.randomUUID()).itemName("Surf Excel Detergent").itemType(ItemTypeEnum.LAUNDRY).build();
+    public ItemDTO getItemById(UUID itemId, Boolean showInventoryOnHand) {
+        Function<Item, ItemDTO> itemToItemDTOMapper = showInventoryOnHand ? itemMapper::itemToItemDTOwithInventory : itemMapper::itemToItemDTO;
+        return itemToItemDTOMapper.apply(itemRepository.findById(itemId).orElseThrow(NotFoundException::new));
     }
 
     @Override
     public ItemDTO saveNewItem(ItemDTO itemDTO) {
         return itemMapper.itemToItemDTO(itemRepository.save(itemMapper.itemDTOToItem(itemDTO)));
-        //return ItemDTO.builder().id(UUID.randomUUID()).build();
     }
 
     @Override
     public ItemDTO updateItemById(ItemDTO itemDTO, UUID itemId) {
-        Item item=itemRepository.findById(itemId).orElseThrow(NotFoundException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(NotFoundException::new);
 
         item.setItemName(itemDTO.getItemName());
         item.setItemType(itemDTO.getItemType());
@@ -52,14 +52,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDTO deleteItemById(UUID itemId) {
         //TODO: Implement delete Logic
-        log.info("Deleted Item: "+itemId);
+        log.info("Deleted Item: " + itemId);
         return null;
     }
 
     @Override
-    public ItemPagedList listsItems(String itemName, ItemTypeEnum itemType, PageRequest pageRequest) {
+    public ItemPagedList listsItems(String itemName, ItemTypeEnum itemType, PageRequest pageRequest, Boolean showInventoryOnHand) {
 
-        ItemPagedList itemPagedList;
         Page<Item> itemPage;
 
         if (!StringUtils.isEmpty(itemName) && !StringUtils.isEmpty(itemType)) {
@@ -75,16 +74,14 @@ public class ItemServiceImpl implements ItemService {
             itemPage = itemRepository.findAll(pageRequest);
         }
 
-        itemPagedList = new ItemPagedList(itemPage
+        return new ItemPagedList(itemPage
                 .getContent()
                 .stream()
-                .map(itemMapper::itemToItemDTO)
+                .map(showInventoryOnHand ? itemMapper::itemToItemDTOwithInventory : itemMapper::itemToItemDTO) // Based on Parameter received
                 .collect(Collectors.toList()),
                 PageRequest
                         .of(itemPage.getPageable().getPageNumber(),
                                 itemPage.getPageable().getPageSize()),
                 itemPage.getTotalElements());
-
-        return itemPagedList;
     }
 }

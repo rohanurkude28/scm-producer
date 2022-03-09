@@ -27,50 +27,48 @@ public class ItemController {
     private static final Integer DEFAULT_PAGE_SIZE = 25;
 
     @GetMapping({"/{itemId}"})
-    public ResponseEntity<ItemDTO> getItemById(@NotNull @PathVariable UUID itemId){
-    return new ResponseEntity<>(itemService.getItemById(itemId), HttpStatus.OK);
+    public ResponseEntity<ItemDTO> getItemById(@NotNull @PathVariable UUID itemId, @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand) {
+        if (showInventoryOnHand == null) showInventoryOnHand = false;
+        return new ResponseEntity<>(itemService.getItemById(itemId, showInventoryOnHand), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity saveNewItem(@Valid @NotNull @RequestBody ItemDTO itemDTO){
-    ItemDTO savedItemDTO = itemService.saveNewItem(itemDTO);
-    HttpHeaders httpHeaders = new HttpHeaders();
-    //TODO: Add URL to Location
-    httpHeaders.add("Location","/api/v1/items/"+savedItemDTO.getId().toString());
+    public ResponseEntity saveNewItem(@Valid @NotNull @RequestBody ItemDTO itemDTO) {
+        ItemDTO savedItemDTO = itemService.saveNewItem(itemDTO);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //TODO: Add URL to Location
+        httpHeaders.add("Location", "/api/v1/items/" + savedItemDTO.getId().toString());
 
-    return new ResponseEntity(httpHeaders,HttpStatus.CREATED);
+        return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
     }
 
 
     @PutMapping({"/{itemId}"})
-    public ResponseEntity updateItemById(ItemDTO itemDTO,@PathVariable UUID itemId){
-        ItemDTO savedItemDTO = itemService.updateItemById(itemDTO,itemId);
+    public ResponseEntity updateItemById(ItemDTO itemDTO, @PathVariable UUID itemId) {
+        ItemDTO savedItemDTO = itemService.updateItemById(itemDTO, itemId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping({"/{itemId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteItemById(@PathVariable UUID itemId){
+    public void deleteItemById(@PathVariable UUID itemId) {
         itemService.deleteItemById(itemId);
     }
 
-    @GetMapping(produces = { "application/json" })
+    @GetMapping(produces = {"application/json"})
     public ResponseEntity<ItemPagedList> listItems(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                    @RequestParam(value = "itemName", required = false) String itemName,
-                                                   @RequestParam(value = "itemType", required = false) ItemTypeEnum itemType){
+                                                   @RequestParam(value = "itemType", required = false) ItemTypeEnum itemType,
+                                                   @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand) {
 
-        if (pageNumber == null || pageNumber < 0){
-            pageNumber = DEFAULT_PAGE_NUMBER;
-        }
+        if (pageNumber == null || pageNumber < 0) pageNumber = DEFAULT_PAGE_NUMBER;
+        if (pageSize == null || pageSize < 1) pageSize = DEFAULT_PAGE_SIZE;
+        if(showInventoryOnHand == null) showInventoryOnHand=false;
 
-        if (pageSize == null || pageSize < 1) {
-            pageSize = DEFAULT_PAGE_SIZE;
-        }
-
-        ItemPagedList ItemList = itemService.listsItems(itemName, itemType, PageRequest.of(pageNumber, pageSize));
+        ItemPagedList ItemList = itemService.listsItems(itemName, itemType, PageRequest.of(pageNumber, pageSize), showInventoryOnHand);
 
         return new ResponseEntity<>(ItemList, HttpStatus.OK);
     }
-    
+
 }
